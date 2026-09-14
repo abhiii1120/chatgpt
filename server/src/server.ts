@@ -1,11 +1,12 @@
 import { app } from "./app/app.js";
 import { connectDB } from "./config/db.js";
+import { env } from "./config/env.js";
 
 async function createServer() {
   await connectDB();
 
-  app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+  app.listen(env.port, () => {
+    console.log(`Server is running on port ${env.port}`);
   });
 }
 

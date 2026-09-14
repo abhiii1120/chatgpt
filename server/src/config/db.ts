@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import { env } from "./env.js";
 
 export async function connectDB(): Promise<void> {
-    await mongoose.connect("mongodb://localhost:27017/chatgpt");
+  await mongoose.connect(env.mongoUri);
 
-    console.log("Connected to MongoDB");
+  console.log("Connected to MongoDB");
 }
