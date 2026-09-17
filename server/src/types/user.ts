@@ -6,3 +6,5 @@ type UserModel = {
 }
 
 export type RegisterUserRequest = Pick<UserModel , "name" | "email" | "password">
+
+export type UserResponse = Omit<UserModel , "password">
