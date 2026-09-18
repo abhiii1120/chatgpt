@@ -37,4 +37,30 @@ describe('Testing register api', () => {
         expect(res.statusCode).toBe(201);
         expect(res.body).toHaveProperty('message',"Registered Successfully");
     });
+
+    test('Should reject existing user', async() => {
+        await request(app).post('/api/v1/auth/register').send({
+            name:'testuser',
+            email:'testuser@example.com',
+            password:'password123'
+        });
+
+        const res = await request(app).post('/api/v1/auth/register').send({
+            name:'testuser',
+            email:'testuser@example.com',
+            password:'password123'
+        });
+
+        expect(res.statusCode).toBe(409);
+    })
+
+    test('Should reject empty values', async () => {
+        let res = await request(app).post('/api/v1/auth/register').send({
+            name:'',
+            email:'testuser@example.com',
+            password:'password123'
+        });
+
+        expect(res.statusCode).toBe(400);
+    })
 })
