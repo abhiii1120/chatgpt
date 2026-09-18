@@ -41,3 +41,13 @@ export async function clearTestDB(){
     }
 }
 
+
+// for running particular file then using -- and file name will work
+// npm run test -- auth.register
+
+//for running one specific test use -t : -t stands for test name
+// npm run test -- -t "should register the user"
+
+// for running one specific test from one file use this command
+// npm run test -- auth.register -t "should register the user"
+
