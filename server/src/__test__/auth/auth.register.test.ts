@@ -1,6 +1,6 @@
 import request from 'supertest';
-import { app } from '../app/app.js';
-import {clearTestDB,connectTestDB,disconnectTestDB} from './setup.js';
+import { app } from '../../app/app.js';
+import {clearTestDB,connectTestDB,disconnectTestDB} from '../setup.js';
 
 /**
  * Runs once before any test in this file

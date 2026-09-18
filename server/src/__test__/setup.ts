@@ -51,3 +51,6 @@ export async function clearTestDB(){
 // for running one specific test from one file use this command
 // npm run test -- auth.register -t "should register the user"
 
+
+// for running whole folder tests just add -- folder name
+// npm run test -- auth

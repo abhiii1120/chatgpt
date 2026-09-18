@@ -9,3 +9,10 @@ export const registerValidation = [
     .withMessage("Password must be at least 6 characters"),
 ];
 
+export const loginValidation = [
+  body("email").isEmail().withMessage("Email is required"),
+  body("password")
+    .isString()
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+];
