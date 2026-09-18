@@ -17,7 +17,28 @@ class SessionDao {
     });
   }
 
-  
+  async findActiveById(sessionId: string) {
+    return SessionModel.findOne({
+      _id: sessionId,
+      isRevoked: false,
+      expiresAt: { $gt: new Date() },
+    });
+  }
+
+  async revokeById(sessionId:string){
+    return SessionModel.findByIdAndUpdate(
+      sessionId,
+      {isRevoked:true},
+      {new:true}
+    )
+  }
+
+  async revokeAllByUser(userId:string){
+    return SessionModel.updateMany(
+      {userId,isRevoked:false},
+      {isRevoked:true}
+    );
+  }
 }
 
 export const sessionDao = new SessionDao();
