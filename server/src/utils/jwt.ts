@@ -24,3 +24,11 @@ export function signRefreshToken(payload :Omit<RefreshTokenPayload,"type">) :str
         refreshTokenOptions,
     )
 }
+
+export function verifyAccessToken(token:string) : AccessTokenPayload {
+    return jwt.verify(token,env.jwtAccessSecret) as AccessTokenPayload;
+}
+
+export function verifyRefreshToken(token:string):RefreshTokenPayload {
+    return jwt.verify(token,env.jwtRefreshSecret) as RefreshTokenPayload;
+}
