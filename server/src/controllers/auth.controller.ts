@@ -219,3 +219,22 @@ export const refresh = async (req: Request, res: Response) => {
 
   res.status(200).json(response);
 };
+
+export const logout = async (req:Request,res:Response) => {
+  const incomingToken = req.cookies[env.refreshCookieName] ?? (req.body.refreshToken ? String(req.body.refreshToken) : "");
+
+  if(incomingToken){
+    try {
+      const payload = verifyRefreshToken(incomingToken);
+      await sessionDao.revokeById(payload.sessionId);
+    } catch {
+      
+    }
+  }
+
+  res.clearCookie(env.refreshCookieName,cookieOptions());
+  res.status(200).json({
+    message:"logged out successfully",
+  })
+}
+
