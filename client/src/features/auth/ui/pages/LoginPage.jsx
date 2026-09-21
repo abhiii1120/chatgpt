@@ -3,33 +3,10 @@ import {useForm} from "react-hook-form";
 import AuthLayout from "../components/AuthLayout";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { useAuth } from "../../hooks/useAuth";
 
-/**
- * LoginForm
- * Props:
- *  - onLogin(data): async function called with { email, password }
- */
-export default function LoginForm({ onLogin }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({ mode: "onBlur" });
- 
-  const [serverError, setServerError] = useState("");
- 
-  const onSubmit = async (data) => {
-    setServerError("");
-    try {
-      if (onLogin) {
-        await onLogin(data);
-      } else {
-        console.log("Login data:", data);
-      }
-    } catch (err) {
-      setServerError(err?.message || "Something went wrong. Please try again.");
-    }
-  };
+export default function LoginForm() {
+  const {handleSubmit,navigate,onLoginSubmit,register,errors} = useAuth();
  
   return (
     <AuthLayout
@@ -48,15 +25,10 @@ export default function LoginForm({ onLogin }) {
     >
       <form
         className="flex w-full flex-col gap-3.5"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onLoginSubmit)}
         noValidate
       >
-        {serverError && (
-          <div className="rounded-lg border border-danger-line bg-danger-soft px-3 py-2.5 text-left text-[13.5px] text-danger">
-            {serverError}
-          </div>
-        )}
- 
+    
         <Input
           id="email"
           type="email"
@@ -87,8 +59,8 @@ export default function LoginForm({ onLogin }) {
           })}
         />
  
-        <Button type="submit" disabled={isSubmitting} className="mt-2">
-          {isSubmitting ? "Continuing..." : "Continue"}
+        <Button type="submit" className="mt-2">
+          Continue
         </Button>
       </form>
     </AuthLayout>

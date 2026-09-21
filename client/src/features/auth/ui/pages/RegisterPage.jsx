@@ -3,36 +3,11 @@ import {useForm} from "react-hook-form";
 import AuthLayout from "../components/AuthLayout";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { useAuth } from "../../hooks/useAuth";
 
+export default function RegisterForm() {
+  const {handleSubmit,navigate,onRegisterSubmit,register,errors} = useAuth();
 
-/**
- * RegisterForm
- * Props:
- *  - onRegister(data): async function called with { name, email, password }
- */
-export default function RegisterForm({ onRegister }) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm({ mode: "onBlur" });
-
-  const [serverError, setServerError] = useState("");
-  const password = watch("password");
-
-  const onSubmit = async (data) => {
-    setServerError("");
-    try {
-      if (onRegister) {
-        await onRegister(data);
-      } else {
-        console.log("Register data:", data);
-      }
-    } catch (err) {
-      setServerError(err?.message || "Something went wrong. Please try again.");
-    }
-  };
 
   return (
     <AuthLayout
@@ -51,14 +26,9 @@ export default function RegisterForm({ onRegister }) {
     >
       <form
         className="flex w-full flex-col gap-3.5"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onRegisterSubmit)}
         noValidate
       >
-        {serverError && (
-          <div className="rounded-lg border border-danger-line bg-danger-soft px-3 py-2.5 text-left text-[13.5px] text-danger">
-            {serverError}
-          </div>
-        )}
 
         <Input
           id="name"
@@ -102,20 +72,8 @@ export default function RegisterForm({ onRegister }) {
           })}
         />
 
-        <Input
-          id="confirmPassword"
-          type="password"
-          label="Confirm password"
-          placeholder="Re-enter your password"
-          error={errors.confirmPassword?.message}
-          {...register("confirmPassword", {
-            required: "Please confirm your password",
-            validate: (value) => value === password || "Passwords do not match",
-          })}
-        />
-
-        <Button type="submit" disabled={isSubmitting} className="mt-2">
-          {isSubmitting ? "Creating account..." : "Continue"}
+        <Button type="submit" className="mt-2">
+          Continue
         </Button>
       </form>
     </AuthLayout>
