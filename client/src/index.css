@@ -1,1 +1,45 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+
+@theme {
+  --color-surface: var(--surface);
+  --color-line: var(--border);
+  --color-line-focus: var(--border-focus);
+  --color-ink: var(--text);
+  --color-ink-muted: var(--text-muted);
+  --color-ink-faint: var(--placeholder);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-danger: var(--error);
+  --color-danger-soft: var(--error-bg);
+  --color-danger-line: var(--error-border);
+}
+ 
+:root {
+  --surface: #212121;
+  --border: #4d4d4f;
+  --border-focus: #ececec;
+  --text: #ececec;
+  --text-muted: #b4b4b4;
+  --placeholder: #8e8ea0;
+  --accent: #10a37f;
+  --accent-hover: #0e8f6f;
+  --error: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --error-border: rgba(239, 68, 68, 0.4);
+}
+ 
+[data-theme="light"] {
+  --surface: #ffffff;
+  --border: #d9d9e3;
+  --border-focus: #0d0d0d;
+  --text: #0d0d0d;
+  --text-muted: #676767;
+  --placeholder: #8e8ea0;
+  --accent: #10a37f;
+  --accent-hover: #0e8f6f;
+  --error: #dc2626;
+  --error-bg: rgba(220, 38, 38, 0.06);
+  --error-border: rgba(220, 38, 38, 0.3);
+}
+ 
