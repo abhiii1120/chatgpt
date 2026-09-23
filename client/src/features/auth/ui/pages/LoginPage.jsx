@@ -14,19 +14,18 @@ export default function LoginForm() {
       footer={
         <>
           Don't have an account?{" "}
-          <a
-            href={'/register'}
-            className="text-ink underline underline-offset-2 hover:text-accent"
+          <p
+          onClick={() => navigate('/register')}
+            className="text-ink underline underline-offset-2 hover:text-accent "
           >
             Sign up
-          </a>
+          </p>
         </>
       }
     >
       <form
         className="flex w-full flex-col gap-3.5"
         onSubmit={handleSubmit(onLoginSubmit)}
-        noValidate
       >
     
         <Input
