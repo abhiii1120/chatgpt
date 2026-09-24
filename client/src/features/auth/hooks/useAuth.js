@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { addUser } from "../state/authSlice";
+import { register as registerThunk, login as loginThunk } from "../state/authSlice";
 
 export let useAuth = () => {
   let navigate = useNavigate();
@@ -11,15 +11,20 @@ export let useAuth = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const {loading,error} = useSelector((state) => state.auth);
 
-  const onRegisterSubmit = (data) => {
-    console.log(data);
-    dispatch(addUser(data));
+  const onRegisterSubmit = async (data) => {
+    const result = await dispatch(registerThunk(data));
+    if(registerThunk.fulfilled.match(result)){
+      navigate("/dashboard");
+    }
   };
 
-  const onLoginSubmit = (data) => {
-    console.log(data);
-    dispatch(addUser(data));
+  const onLoginSubmit = async (data) => {
+    const result = await dispatch(loginThunk(data));
+    if(loginThunk.fulfilled.match(result)){
+      navigate("/dashboard");
+    }
   };
 
   return {
@@ -29,5 +34,7 @@ export let useAuth = () => {
     onLoginSubmit,
     navigate,
     errors,
+    loading,
+    error
   };
 };

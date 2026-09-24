@@ -14,12 +14,12 @@ export default function LoginForm() {
       footer={
         <>
           Don't have an account?{" "}
-          <p
+          <span
           onClick={() => navigate('/register')}
             className="text-ink underline underline-offset-2 hover:text-accent "
           >
             Sign up
-          </p>
+          </span>
         </>
       }
     >
