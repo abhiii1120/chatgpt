@@ -15,12 +15,12 @@ export default function RegisterForm() {
       footer={
         <>
           Already have an account?{" "}
-          <p
+          <span
             onClick={() => navigate('/login')}
             className="text-ink underline underline-offset-2 hover:text-accent"
           >
             Log in
-          </p>
+          </span>
         </>
       }
     >
