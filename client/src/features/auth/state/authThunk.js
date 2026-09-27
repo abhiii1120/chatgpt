@@ -40,3 +40,24 @@ export const refresh = createAsyncThunk(
         }
     },
 )
+
+export const bootstrapSession = createAsyncThunk(
+    'auth/bootstrapSession',
+    async (_, { getState, dispatch, rejectWithValue }) => {
+        console.log('bootstrapSession thunk started') // add this
+        const { auth } = getState()
+        if (auth.initialized) {
+            return { skipped: true, isAuthenticated: auth.isAuthenticated }
+        }
+        try {
+            const { data } = await authService.refreshToken()
+            setAccessToken(data.accessToken)
+            console.log(data)
+            return data
+        } catch (error) {
+            setAccessToken(null)
+            dispatch(clearSessions())
+            return rejectWithValue(parseError(error))
+        }
+    },
+)
