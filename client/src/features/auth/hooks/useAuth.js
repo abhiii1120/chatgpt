@@ -16,14 +16,14 @@ export let useAuth = () => {
   const onRegisterSubmit = async (data) => {
     const result = await dispatch(registerThunk(data));
     if(registerThunk.fulfilled.match(result)){
-      navigate("/dashboard");
+      navigate("/chat");
     }
   };
 
   const onLoginSubmit = async (data) => {
     const result = await dispatch(loginThunk(data));
     if(loginThunk.fulfilled.match(result)){
-      navigate("/dashboard");
+      navigate("/chat");
     }
   };
 
