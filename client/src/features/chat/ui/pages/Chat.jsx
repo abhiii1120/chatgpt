@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
-import IconPlus from '../../../../shared/ui/icons/IconPlus'
-import IconUser from '../../../../shared/ui/icons/IconUser'
-import IconLogout from '../../../../shared/ui/icons/IconLogout'
-import IconChevron from '../../../../shared/ui/icons/IconChevron'
-import IconMenu from '../../../../shared/ui/icons/IconMenu'
-import IconSend from '../../../../shared/ui/icons/IconSend'
+import IconPlus from '@/shared/ui/icons/IconPlus'
+import IconUser from '@/shared/ui/icons/IconUser'
+import IconLogout from '@/shared/ui/icons/IconLogout'
+import IconChevron from '@/shared/ui/icons/IconChevron'
+import IconMenu from '@/shared/ui/icons/IconMenu'
+import IconSend from '@/shared/ui/icons/IconSend'
+import { getInitials } from '@/shared/utils/utils'
 // import { logout } from '../state/authThunk'
 
 
@@ -16,16 +17,6 @@ const initialChats = [
   { id: 3, title: 'Socket.IO room setup', time: 'Yesterday' },
   { id: 4, title: 'Component structure ideas', time: '2d' },
 ]
-
-function initials(name) {
-  if (!name) return '?'
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('')
-}
 
 const Chat = () => {
   const { user } = useSelector((state) => state.auth)
@@ -175,7 +166,7 @@ const Chat = () => {
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full
               bg-[#5EEAD4]/15 text-xs font-semibold text-[#5EEAD4]"
             >
-              {initials(user?.name)}
+              {getInitials(user?.name)}
             </span>
             <span className="min-w-0 flex-1 text-left">
               <span className="block truncate text-sm font-medium">
