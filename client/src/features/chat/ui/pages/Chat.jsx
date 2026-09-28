@@ -233,7 +233,7 @@ const Chat = () => {
               onKeyDown={handleKeyDown}
               rows={1}
               placeholder="Message..."
-              className="max-h-[200px] flex-1 resize-none bg-transparent py-1.5 text-sm
+              className="max-h-50 flex-1 resize-none bg-transparent py-1.5 text-sm
                 text-[#E7E7EA] placeholder-white/30 outline-none"
             />
             <button
