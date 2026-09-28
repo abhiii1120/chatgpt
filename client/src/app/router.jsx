@@ -4,7 +4,7 @@ import LoginForm from "../features/auth/ui/pages/LoginPage";
 import RegisterForm from "../features/auth/ui/pages/RegisterPage";
 import PublicLayout from "./layouts/PublicLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
-import Chat from "../features/chat/ui/Chat";
+import Chat from "../features/chat/ui/pages/Chat";
 import { useDispatch } from "react-redux";
 import { bootstrapSession } from "../features/auth/state/authThunk";
 import { useEffect } from "react";
