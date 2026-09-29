@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { bootstrapSession, login, refresh, register } from "./authThunk";
+import { bootstrapSession, login, logout, refresh, register } from "./authThunk";
 
 const initialState = {
   user: null,
@@ -47,6 +47,14 @@ let authSlice = createSlice({
       .addCase(bootstrapSession.rejected, () => ({
         ...initialState,
         initialized: true,
+      }))
+      .addCase(logout.fulfilled,() => ({
+        ...initialState,
+        initialized:true
+      }))
+      .addCase(logout.rejected,() => ({
+        ...initialState,
+        initialized:true
       }))
       // --- then all addMatcher calls ---
       .addMatcher(

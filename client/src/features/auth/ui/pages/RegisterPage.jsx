@@ -16,7 +16,7 @@ export default function RegisterForm() {
         <>
           Already have an account?{" "}
           <span
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/')}
             className="text-ink underline underline-offset-2 hover:text-accent"
           >
             Log in

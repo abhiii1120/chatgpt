@@ -7,3 +7,8 @@ export function getInitials(name) {
     .map((part) => part[0]?.toUpperCase())
     .join('')
 }
+
+
+export function parseError(error){
+    return error?.response?.data?.message || "something went wrong"
+}
