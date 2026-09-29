@@ -131,9 +131,9 @@ export default function AuthLayout({ heading, subheading, children, footer }) {
           }
         `}</style>
 
-        <div className="auth-orb pointer-events-none absolute -left-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
+        <div className="auth-orb pointer-events-none absolute -left-32 -top-32 h-128 w-lg rounded-full bg-accent/25 blur-3xl" />
         <div
-          className="auth-orb pointer-events-none absolute -bottom-40 -right-20 h-[28rem] w-[28rem] rounded-full bg-accent/15 blur-3xl"
+          className="auth-orb pointer-events-none absolute -bottom-40 -right-20 h-112 w-md rounded-full bg-accent/15 blur-3xl"
           style={{ animationDelay: "-11s" }}
         />
 
@@ -158,11 +158,11 @@ export default function AuthLayout({ heading, subheading, children, footer }) {
 
       {/* Right: form panel */}
       <div className="relative flex h-full flex-col overflow-hidden px-6 py-12 sm:px-10">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/[0.06] blur-3xl lg:hidden" />
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-accent/[0.05] blur-3xl lg:hidden" />
+        <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/6 blur-3xl lg:hidden" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-accent/5 blur-3xl lg:hidden" />
 
         <div className="relative flex flex-1 items-center justify-center">
-          <div className="w-full max-w-[380px] animate-[fadeUp_0.5s_ease-out]">
+          <div className="w-full max-w-95 animate-[fadeUp_0.5s_ease-out]">
             <style>{`
             @keyframes fadeUp {
               from { opacity: 0; transform: translateY(8px); }
@@ -191,7 +191,7 @@ export default function AuthLayout({ heading, subheading, children, footer }) {
           </div>
         </div>
 
-        <p className="relative mx-auto max-w-[380px] pt-8 text-center text-[13px] leading-relaxed text-ink-muted/60">
+        <p className="relative mx-auto max-w-95 pt-8 text-center text-[13px] leading-relaxed text-ink-muted/60">
           Cove keeps every conversation in one place, so you can ask a
           question, close the tab, and pick the thread back up tomorrow.
         </p>

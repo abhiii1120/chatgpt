@@ -238,7 +238,7 @@ const Chat = () => {
                     className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                       m.role === 'user'
                         ? 'rounded-tr-sm bg-[#5EEAD4]/10 text-[#E7E7EA]'
-                        : 'rounded-tl-sm bg-white/[0.06] text-[#E7E7EA]/90'
+                        : 'rounded-tl-sm bg-white/6 text-[#E7E7EA]/90'
                     }`}
                   >
                     {m.text}
