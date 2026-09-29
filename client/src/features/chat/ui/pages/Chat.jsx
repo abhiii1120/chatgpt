@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
 import IconPlus from '@/shared/ui/icons/IconPlus'
 import IconUser from '@/shared/ui/icons/IconUser'
 import IconLogout from '@/shared/ui/icons/IconLogout'
@@ -8,8 +7,22 @@ import IconChevron from '@/shared/ui/icons/IconChevron'
 import IconMenu from '@/shared/ui/icons/IconMenu'
 import IconSend from '@/shared/ui/icons/IconSend'
 import { getInitials } from '@/shared/utils/utils'
-// import { logout } from '../state/authThunk'
+import { useChat } from '../../hooks/useChat'
 
+function BrandMark() {
+  return (
+    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#5EEAD4]/20">
+      <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 text-[#5EEAD4]">
+        <path
+          d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  )
+}
 
 const initialChats = [
   { id: 1, title: 'Fixing auth refresh flow', time: '2m' },
@@ -20,10 +33,9 @@ const initialChats = [
 
 const Chat = () => {
   const { user } = useSelector((state) => state.auth)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { handleLogout } = useChat()
 
-  const [chats] = useState(initialChats)
+  const [chats, setChats] = useState(initialChats)
   const [activeChatId, setActiveChatId] = useState(initialChats[0].id)
   const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
@@ -74,10 +86,12 @@ const Chat = () => {
     }
   }
 
-  const handleLogout = async () => {
-    setMenuOpen(false)
-    // await dispatch(logout())
-    navigate('/')
+  const handleNewChat = () => {
+    const newChat = { id: Date.now(), title: 'New chat', time: 'Now' }
+    setChats((prev) => [newChat, ...prev])
+    setActiveChatId(newChat.id)
+    setMessages([])
+    setSidebarOpen(false)
   }
 
   return (
@@ -96,8 +110,14 @@ const Chat = () => {
           transition-transform duration-200 md:static md:translate-x-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
+        <div className="flex items-center gap-2 px-3 pb-1 pt-3">
+          <BrandMark />
+          <span className="text-sm font-medium tracking-tight text-white/90">Cove</span>
+        </div>
+
         <div className="p-3">
           <button
+            onClick={handleNewChat}
             className="flex w-full items-center gap-2 rounded-lg border border-white/10 px-3 py-2.5
               text-sm font-medium text-[#E7E7EA] transition-colors hover:bg-white/5"
           >
@@ -198,7 +218,8 @@ const Chat = () => {
         <div className="flex-1 overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-              <h2 className="text-lg font-medium text-white/80">
+              <BrandMark />
+              <h2 className="mt-4 text-lg font-medium text-white/80">
                 Start the conversation
               </h2>
               <p className="mt-1.5 max-w-sm text-sm text-white/40">
@@ -209,9 +230,16 @@ const Chat = () => {
           ) : (
             <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6">
               {messages.map((m) => (
-                <div key={m.id} className="flex justify-end">
-                  <div className="max-w-[75%] rounded-2xl rounded-tr-sm bg-[#5EEAD4]/10
-                    px-4 py-2.5 text-sm leading-relaxed text-[#E7E7EA]"
+                <div
+                  key={m.id}
+                  className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                      m.role === 'user'
+                        ? 'rounded-tr-sm bg-[#5EEAD4]/10 text-[#E7E7EA]'
+                        : 'rounded-tl-sm bg-white/[0.06] text-[#E7E7EA]/90'
+                    }`}
                   >
                     {m.text}
                   </div>

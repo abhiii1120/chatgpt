@@ -1,10 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "../service/authService";
 import { setAccessToken } from "../../../shared/service/httpClient";
-
-function parseError(error){
-    return error?.response?.data?.message || "something went wrong"
-}
+import { useDispatch } from "react-redux";
+import { parseError } from "@/shared/utils/utils";
 
 export const register = createAsyncThunk('auth/register', async (payload, {rejectWithValue}) => {
     try {
@@ -26,16 +24,23 @@ export const login = createAsyncThunk('auth/login',async(payload,{rejectWithValu
     }
 })
 
+export const logout = createAsyncThunk('auth/logout',async() => {
+    try {
+        await authService.logout();
+    } finally {
+        setAccessToken(null);
+    }
+})
+
 export const refresh = createAsyncThunk(
     'auth/refresh',
-    async (_, { dispatch, rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
             const { data } = await authService.refreshToken()
             setAccessToken(data.accessToken)
             return data
         } catch (error) {
             setAccessToken(null)
-            dispatch(clearSessions())
             return rejectWithValue(parseError(error))
         }
     },
@@ -43,8 +48,7 @@ export const refresh = createAsyncThunk(
 
 export const bootstrapSession = createAsyncThunk(
     'auth/bootstrapSession',
-    async (_, { getState, dispatch, rejectWithValue }) => {
-        console.log('bootstrapSession thunk started') // add this
+    async (_, { getState, rejectWithValue }) => {
         const { auth } = getState()
         if (auth.initialized) {
             return { skipped: true, isAuthenticated: auth.isAuthenticated }
@@ -52,12 +56,11 @@ export const bootstrapSession = createAsyncThunk(
         try {
             const { data } = await authService.refreshToken()
             setAccessToken(data.accessToken)
-            console.log(data)
             return data
         } catch (error) {
             setAccessToken(null)
-            dispatch(clearSessions())
             return rejectWithValue(parseError(error))
         }
     },
 )
+
