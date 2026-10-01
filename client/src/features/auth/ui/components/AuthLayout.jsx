@@ -1,11 +1,5 @@
 import React from "react";
 
-/* ---------------------------------------------------------------
- * Small components used by AuthLayout below. Kept in this file
- * since they're only used here, but split out from the JSX so
- * the layout markup itself stays readable.
- * ------------------------------------------------------------- */
-
 function BrandMark({ withLabel = false, className = "" }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>

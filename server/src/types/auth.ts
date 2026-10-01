@@ -15,7 +15,6 @@ export type RefreshTokenPayload = {
 export type AuthSuccessResponse = {
   message: string;
   accessToken: string;
-  refreshToken: string;
   user: UserResponse;
 };
 

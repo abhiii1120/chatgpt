@@ -101,7 +101,6 @@ export const register = async (req: Request, res: Response) => {
   const response: AuthSuccessResponse = {
     accessToken,
     message: "Registered Successfully",
-    refreshToken,
     user: sanitizeUser({
       _id: user._id.toString(),
       name: user.name,
@@ -140,7 +139,6 @@ export const login = async (req: Request, res: Response) => {
   const response: AuthSuccessResponse = {
     message: "Logged in successfully",
     accessToken,
-    refreshToken,
     user: sanitizeUser({
       _id: user._id.toString(),
       name: user.name,
