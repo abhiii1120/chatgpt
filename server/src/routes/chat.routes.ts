@@ -1,12 +1,38 @@
 import { Router } from "express";
-import { sendMessageValidation } from "../validations/chat.validation.js";
+import {
+  conversationIdValidation,
+  sendMessageValidation,
+} from "../validations/chat.validation.js";
 import { validateRequest } from "../validations/validate-request.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
-import { chatController } from "../controllers/chat.controller.js";
+import {
+  chatController,
+  getConversation,
+  listConversation,
+} from "../controllers/chat.controller.js";
 import { authUserMiddleware } from "../middlewares/auth-user.js";
 
 const chatRouter = Router();
 
-chatRouter.post("/conversation",sendMessageValidation,validateRequest,authUserMiddleware,asyncHandler(chatController))
+chatRouter.get(
+  "/conversations",
+  authUserMiddleware,
+  asyncHandler(listConversation),
+);
+chatRouter.get(
+  "/conversations/:conversationId",
+  authUserMiddleware,
+  conversationIdValidation,
+  validateRequest,
+  asyncHandler(getConversation),
+);
+
+chatRouter.post(
+  "/conversation",
+  sendMessageValidation,
+  validateRequest,
+  authUserMiddleware,
+  asyncHandler(chatController),
+);
 
 export { chatRouter };

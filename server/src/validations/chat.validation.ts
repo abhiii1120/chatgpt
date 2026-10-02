@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 export const sendMessageValidation = [
   body("message").isString().notEmpty().withMessage("Message is required"),
@@ -9,3 +9,9 @@ export const sendMessageValidation = [
     .isMongoId()
     .withMessage("conversation id must be a valid mongodb objectid"),
 ];
+
+export const conversationIdValidation = [
+  param("conversationId")
+    .isMongoId()
+    .withMessage('Conversation ID must be a valid mongodb objectId')
+]
