@@ -35,6 +35,10 @@ export function setAccessToken(token) {
   delete httpClient.defaults.headers.common.Authorization;
 }
 
+export function getAccessToken(){
+  return accessToken
+}
+
 /** avoid duplicate refresh calls
  *  if the access token has expired,get a new one - but if 5 requests fail at same time,
  *  don't fire 5 refresh calls.

@@ -1,4 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  fetchConversation,
+  fetchConversations,
+  sendChatMessage,
+} from "./sessionThunk";
 
 let initialState = {
   activeSessionId: null, //which conversation is open right now
@@ -45,7 +50,7 @@ const sessionSlice = createSlice({
           id: conversationId,
           title,
           createdAt: userMessage.createdAt,
-          updatedAt: aiMessage.updatedAt,
+          updatedAt: aiMessage.createdAt,
           messages: [userMessage, aiMessage],
         };
         if (localIndex >= 0) {
@@ -73,9 +78,73 @@ const sessionSlice = createSlice({
     clearSessions() {
       return { ...initialState };
     },
+    streamFinished(state, action) {
+      const { aiMessageId } = action.payload;
+
+      for (const session of state.sessions) {
+        const aiMessage = session.messages?.find(
+          (message) => message.id === aiMessageId,
+        );
+
+        if (aiMessage) {
+          aiMessage.isStreaming = false;
+          break;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
-    // builder
+    builder
+      .addCase(fetchConversations.pending, (state) => {
+        ((state.listStatus = "loading"), (state.error = null));
+      })
+      .addCase(fetchConversations.fulfilled, (state, action) => {
+        state.listStatus = "succeeded";
+        const localSessions = state.sessions.filter((item) => item.isLocal);
+        const serverSessions = action.payload.map((conversation) => {
+          const cached = state.sessions.find(
+            (item) => item.id === conversation.id,
+          );
+          return cached?.messages
+            ? { ...conversation, messages: cached.messages }
+            : conversation;
+        });
+        state.sessions = [...localSessions, ...serverSessions];
+      })
+      .addCase(fetchConversations.rejected, (state, action) => {
+        state.listStatus = "failed";
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchConversation.pending, (state, action) => {
+        state.detailStatus[action.meta.arg] = "loading";
+        state.error = null;
+      })
+      .addCase(fetchConversation.fulfilled, (state, action) => {
+        state.detailStatus[action.payload.id] = "succeeded";
+        const index = state.sessions.findIndex(
+          (item) => item.id === action.payload.id,
+        );
+        if (index >= 0) {
+          state.sessions[index] = action.payload;
+        } else {
+          state.sessions.unshift(action.payload);
+        }
+      })
+      .addCase(fetchConversation.rejected, (state, action) => {
+        state.detailStatus[action.meta.arg] = "failed";
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(sendChatMessage.pending, (state) => {
+        state.sendStatus = "loading";
+        state.error = null;
+      })
+      .addCase(sendChatMessage.fulfilled, (state) => {
+        state.sendStatus = "succeeded";
+      })
+      .addCase(sendChatMessage.rejected, (state, action) => {
+        state.sendStatus = "failed";
+        state.error = action.payload || action.error.message;
+      });
   },
 });
 
@@ -86,6 +155,7 @@ export const {
   streamStarted,
   streamChunkAppended,
   clearSessions,
+  streamFinished,
 } = sessionSlice.actions;
 
 export default sessionSlice.reducer;
