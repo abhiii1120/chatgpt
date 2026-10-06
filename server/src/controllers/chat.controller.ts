@@ -119,8 +119,7 @@ export const chatController = async (
   let aiMessage: string = "";
 
   for await (const chunk of stream) {
-    res.write(`data: ${chunk.text}\n\n`);
-
+    res.write(`data: ${JSON.stringify(chunk.text)}\n\n`);
     aiMessage += chunk.text;
   }
 
