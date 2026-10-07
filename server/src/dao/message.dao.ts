@@ -1,4 +1,4 @@
-import { type Message } from './../types/chat.js';
+import { type Message, type MongoMessage } from './../types/chat.js';
 import { messageModel, type messageDocument } from './../models/message.model.js';
 
 class MessageDao {
@@ -10,8 +10,15 @@ class MessageDao {
         return message
     }
 
-    async findMessagesByConversation(conversation:string){
-        return  messageModel.find({conversation}).sort({createdAt:1}).lean();
+    async findMessagesByConversation(conversation:string):Promise<MongoMessage[]>{
+        return (await messageModel.find({conversation}).sort({createdAt:1}).lean()).map((message) => ({
+            _id:message._id.toString(),
+            content:message.content,
+            author:message.author,
+            conversation:message.conversation.toString(),
+            createdAt:message.createdAt,
+            updatedAt:message.updatedAt
+        }));
     }
 }
 

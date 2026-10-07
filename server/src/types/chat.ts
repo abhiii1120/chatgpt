@@ -8,3 +8,9 @@ export type Message = {
     content:string,
     conversation:string,
 }
+
+export type MongoMessage = Message & {
+    _id:string,
+    createdAt:Date,
+    updatedAt:Date,
+}

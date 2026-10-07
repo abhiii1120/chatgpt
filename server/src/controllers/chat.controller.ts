@@ -108,7 +108,9 @@ export const chatController = async (
     conversation: conversationId,
   });
 
-  const stream = await getStream({ message });
+  const messages = await messageDao.findMessagesByConversation(conversationId)
+
+  const stream = await getStream({ messages });
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
