@@ -1,7 +1,8 @@
 import { ChatMistralAI } from "@langchain/mistralai";
 import { env } from "../config/env.js";
-import { createAgent, HumanMessage } from "langchain";
+import { AIMessage, createAgent, HumanMessage } from "langchain";
 import z from "zod";
+import type { MongoMessage } from "../types/chat.js";
 
 const smallModel = new ChatMistralAI({
     model:'ministral-14b-2512',
@@ -31,7 +32,16 @@ export async function getConversationTitle({message}:{message:string}) : Promise
     return response.structuredResponse.title
 }
 
-export async function getStream({message}:{message:string}): Promise<ReadableStream>{
-    const stream = await mediumModel.stream(message);
+export async function getStream({messages}:{messages:MongoMessage[]}): Promise<ReadableStream>{
+    const stream = await mediumModel.stream(
+        messages.map((message) => {
+            if(message.author === 'user'){
+                return new HumanMessage(message.content)
+            }
+            else{
+                return new AIMessage(message.content)
+            }
+        })
+    );
     return stream;
 }
