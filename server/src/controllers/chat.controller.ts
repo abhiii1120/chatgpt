@@ -45,8 +45,8 @@ export const getConversation = async (req: Request, res: Response) => {
   console.log(req.params.conversationId, user.userId);
 
   const conversation = await conversationDao.findConversationByIdAndUser(
-    user.userId,
     String(req.params.conversationId),
+    user.userId,
   );
 
   if (!conversation) {
@@ -86,6 +86,7 @@ export const chatController = async (
   res: Response,
 ) => {
   let { message, conversationId } = req.body;
+  let conversationTitle:string;
   const user = req.user;
 
   if (!user) {
@@ -93,37 +94,47 @@ export const chatController = async (
   }
 
   if (!conversationId) {
-    let title = await getConversationTitle({ message });
+    conversationTitle = await getConversationTitle({ message });
     const newConversation = await conversationDao.createConversation({
-      title,
       userId: user.userId,
+      title: conversationTitle,
     });
-
+    console.log("body:", req.body, "user:", user.userId);
     conversationId = newConversation._id.toString();
-  }
+  }else {
+        const conversation = await conversationDao.findConversationByIdAndUser(
+            conversationId,
+            user.userId
+        );
+        if (!conversation) {
+            throw new notFound("Conversation not found");
+        }
+        conversationTitle = conversation.title;
+    }
 
-  await messageDao.createMessage({
-    content: message,
-    author: "user",
-    conversation: conversationId,
-  });
-
+    await messageDao.createMessage({
+        content: message,
+        author: "user",
+        conversation: conversationId
+    })
   const messages = await messageDao.findMessagesByConversation(conversationId)
 
-  const stream = await getStream({ messages });
+  const stream = await getStream({ messages ,userId:user.userId});
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   res.setHeader("X-Conversation-Id", conversationId);
-  // res.setHeader("X-Conversation-Title", encodeURIComponent(conversationTitle));
+  res.setHeader("X-Conversation-Title", encodeURIComponent(conversationTitle));
 
   let aiMessage: string = "";
 
-  for await (const chunk of stream) {
-    res.write(`data: ${JSON.stringify(chunk.text)}\n\n`);
-    aiMessage += chunk.text;
+  for await (const [token,metadata] of stream) {
+    if(token.getType() === 'ai'){
+    res.write(`data: ${JSON.stringify(token.text)}\n\n`);
+    aiMessage += token.text;
   }
+}
 
   await messageDao.createMessage({
     content: aiMessage,
