@@ -15,9 +15,9 @@ class ConversationDao {
     return conversation;
   }
 
-  async findConversationByIdAndUser(user:string,conversationId:string){
-        return conversationModel.findOne({_id:conversationId,user}).lean();
-  }
+  async findConversationByIdAndUser(conversationId: string, user: string) {
+        return conversationModel.findOne({ _id: conversationId, user }).lean();
+    }
 
   async findConversationsByUser(user:string){
         return conversationModel.find({user}).sort({updatedAt:-1}).lean();
