@@ -3,7 +3,11 @@ import * as z from "zod";
 import { contextDao } from "../../dao/context.dao.js";
 
 export const getMemoryTool = tool(
-  async ({ userId }) => contextDao.readContextByUser(userId),
+  async ({ }, config) => {
+    const userId = config.configurable.userId;
+    const context = await contextDao.readContextByUser({userId})
+    return context
+  },
   {
     name: "getMemory",
     description: "Retrieves the context description of the user",
@@ -14,8 +18,11 @@ export const getMemoryTool = tool(
 );
 
 export const updateMemoryTool = tool(
-  async ({ userId, description }) =>
-    contextDao.updateContextByUser({ userId, description }),
+  async ({description }:{description:string},config) =>{
+    const userId = config.configurable.userId;
+    const result = await contextDao.updateContextByUser({ userId, description });
+    return result
+  },
   {
     name: "updateMemory",
     description: "Overrides the context description for a given user",
