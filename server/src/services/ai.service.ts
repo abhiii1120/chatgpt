@@ -44,9 +44,7 @@ export async function getStream({
     model: smallModel,
     tools: [getMemoryTool, updateMemoryTool],
     systemPrompt: `Read the memory context to make the conversation more personlized.
-                 Mandatory: Update the memory whenever you notice a fact that will be relevant for weeks/months and then respond to the user.
-
-         current userid ${userId}`,
+                 Mandatory: Update the memory whenever you notice a fact that will be relevant for weeks/months and then respond to the user.`,
   });
 
   const stream = await agent.stream(
@@ -61,6 +59,9 @@ export async function getStream({
     },
     {
       streamMode: "messages",
+      configurable:{
+        userId:userId
+      }
     },
   );
   return stream;

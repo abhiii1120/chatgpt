@@ -6,7 +6,7 @@ class ContextDao {
    * @param userId - id of the user
    * @returns the description if found , else return default message
    */
-  async readContextByUser(userId: string): Promise<string> {
+  async readContextByUser({userId}:{userId: string}): Promise<string> {
     const contextDoc: ContextDocument | null = await contextModel
       .findOne({ user:userId })
       .lean();
