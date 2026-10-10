@@ -20,6 +20,7 @@ export const env: AppEnv = {
   refreshTokenTtl: process.env.REFRESH_TOKEN_TTL ?? "7d",
   refreshCookieName : process.env.REFRESH_COOKIE_NAME ?? "refreshToken",
   mistralapikey : required("MISTRAL_API_KEY"),
+  tvlyApiKey : required("TVLY_API_KEY"),
 };
 
 export const isProduction = env.nodeEnv === "production";
