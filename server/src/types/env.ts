@@ -9,4 +9,5 @@ export type AppEnv = {
     refreshCookieName:string,
     mistralapikey:string,
     tvlyApiKey:string,
+    langsmithapikey:string,
 }

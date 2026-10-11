@@ -1,7 +1,6 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import type { AppEnv } from "../types/env.js";
 
-dotenv.config();
 
 function required(name: string, fallback?: string): string {
   let value = process.env[name] ?? fallback;
@@ -21,6 +20,7 @@ export const env: AppEnv = {
   refreshCookieName : process.env.REFRESH_COOKIE_NAME ?? "refreshToken",
   mistralapikey : required("MISTRAL_API_KEY"),
   tvlyApiKey : required("TVLY_API_KEY"),
+  langsmithapikey:required("LANGSMITH_API_KEY"),
 };
 
 export const isProduction = env.nodeEnv === "production";

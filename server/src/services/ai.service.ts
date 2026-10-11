@@ -50,6 +50,8 @@ export async function getStream({
     Use the web search tool to look up infromation on the web when you don't know the answer to a question. Always use the web
     search tool when you are unsure about an answer. If you find relevant information, use it to respond to the user.If you
     don't find relevant information, respond with "I couldn't find any relevant information on that topic."
+
+    Current Date: ${new Date().toISOString().split("T")[0]}
     `,
   });
 
