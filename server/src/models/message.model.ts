@@ -10,7 +10,7 @@ const messageSchema = new Schema(
     },
     author: {
       type: String,
-      enum: ["user", "ai"],
+      enum: ["user", "ai", "tool"],
       default: "user",
     },
     content: {
@@ -19,6 +19,14 @@ const messageSchema = new Schema(
       trim: true,
       minlength: 1,
     },
+    toolCalls: [
+      {
+        arguments: Object,
+        id: String,
+        name: String,
+      },
+    ],
+    toolCallId:String,
   },
   {
     timestamps: true,
@@ -26,7 +34,7 @@ const messageSchema = new Schema(
 );
 
 export type messageDocument = InferSchemaType<typeof messageSchema> & {
-  _id:Types.ObjectId
-}
+  _id: Types.ObjectId;
+};
 
-export const messageModel = model("Message",messageSchema)
+export const messageModel = model("Message", messageSchema);

@@ -5,6 +5,7 @@ import unauthorizedError from "../utils/errors/unauthorized.js";
 import { conversationDao } from "../dao/conversation.dao.js";
 import { messageDao } from "../dao/message.dao.js";
 import notFound from "../utils/errors/notFound.js";
+import { AIMessage, AIMessageChunk, ToolMessage, type HumanMessage } from "langchain";
 
 /**
  * @GET /api/vi/chat/conversations
@@ -53,9 +54,7 @@ export const getConversation = async (req: Request, res: Response) => {
     throw new notFound("Conversation not found");
   }
 
-  const messages = await messageDao.findMessagesByConversation(
-    conversation._id.toString(),
-  );
+  const messages = (await messageDao.findMessagesByConversation(conversation._id.toString())).filter((message) => message.author === "user" || (message.author === "ai" && message.toolCalls?.length === 0));
 
   res.status(200).json({
     conversation: {
@@ -86,7 +85,7 @@ export const chatController = async (
   res: Response,
 ) => {
   let { message, conversationId } = req.body;
-  let conversationTitle:string;
+  let conversationTitle: string;
   const user = req.user;
 
   if (!user) {
@@ -99,27 +98,26 @@ export const chatController = async (
       userId: user.userId,
       title: conversationTitle,
     });
-    console.log("body:", req.body, "user:", user.userId);
     conversationId = newConversation._id.toString();
-  }else {
-        const conversation = await conversationDao.findConversationByIdAndUser(
-            conversationId,
-            user.userId
-        );
-        if (!conversation) {
-            throw new notFound("Conversation not found");
-        }
-        conversationTitle = conversation.title;
+  } else {
+    const conversation = await conversationDao.findConversationByIdAndUser(
+      conversationId,
+      user.userId,
+    );
+    if (!conversation) {
+      throw new notFound("Conversation not found");
     }
+    conversationTitle = conversation.title;
+  }
 
-    await messageDao.createMessage({
-        content: message,
-        author: "user",
-        conversation: conversationId
-    })
+  await messageDao.createMessage({
+    content: message,
+    author: "user",
+    conversation: conversationId,
+  });
   const messages = await messageDao.findMessagesByConversation(conversationId)
 
-  const stream = await getStream({ messages ,userId:user.userId});
+  const stream = await getStream({ messages, userId: user.userId });
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -129,18 +127,45 @@ export const chatController = async (
 
   let aiMessage: string = "";
 
-  for await (const [token,metadata] of stream) {
-    if(token.getType() === 'ai'){
-    res.write(`data: ${JSON.stringify(token.text)}\n\n`);
-    aiMessage += token.text;
-  }
-}
+  for await (const [mode, data] of stream) {
+    console.log(mode,data)
+    if (mode === "messages") {
+      const [token, metadata] = data;
 
-  await messageDao.createMessage({
-    content: aiMessage,
-    author: "ai",
-    conversation: conversationId,
-  });
+      if (token.getType() === "ai") {
+        res.write(`data: ${JSON.stringify(token.text)}\n\n`);
+        aiMessage += token.text;
+      }
+    } else if (mode === "values") {
+      console.log("received values:", data);
+
+      const currentStateMessages : (HumanMessage | AIMessage | ToolMessage)[] = data.messages;
+
+      const newMessage = currentStateMessages.at(-1);
+
+      if(newMessage instanceof AIMessageChunk){
+        await messageDao.createMessage({
+          content:newMessage.text || "no content",
+          author:'ai',
+          conversation:conversationId,
+          toolCalls: newMessage.tool_calls ? newMessage.tool_calls.map((call) => {
+            return {
+              arguments:call.args,
+              id:call.id ?? "",
+              name:call.name
+            }
+          }) : []
+        })
+      } else if (newMessage instanceof ToolMessage){
+        await messageDao.createMessage({
+          content:newMessage.text,
+          author:'tool',
+          conversation:conversationId,
+          toolCallId:newMessage.tool_call_id
+        })
+      }
+    }
+  }
 
   res.end();
 };
