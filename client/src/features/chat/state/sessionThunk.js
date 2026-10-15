@@ -1,4 +1,4 @@
-import { parseError } from "@/shared/utils/utils";
+import { generateId, parseError } from "@/shared/utils/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { chatService } from "../service/chatService";
 import {
@@ -45,6 +45,7 @@ export const fetchConversation = createAsyncThunk(
   },
 );
 
+
 export const sendChatMessage = createAsyncThunk(
   "chatSession/sendChatMessage",
   async (
@@ -52,12 +53,12 @@ export const sendChatMessage = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     const userMessage = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       author: "user",
       content: message,
       createdAt: new Date().toISOString(),
     };
-    const aiMessageId = crypto.randomUUID();
+    const aiMessageId = generateId();
 
     try {
       await chatService.sendMessageStream(message, conversationId, {

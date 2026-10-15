@@ -10,4 +10,5 @@ export type AppEnv = {
     mistralapikey:string,
     tvlyApiKey:string,
     langsmithapikey:string,
+    cookieSecure:boolean,
 }
