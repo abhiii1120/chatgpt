@@ -54,7 +54,7 @@ function cookieOptions() {
   return {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: isProduction,
+    secure: env.cookieSecure,
     path: "/",
   };
 }

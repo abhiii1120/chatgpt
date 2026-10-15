@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { fetchConversation, fetchConversations, sendChatMessage } from "../state/sessionThunk";
 import { createLocalSession, setActiveSession } from "../state/sessionSlice";
+import { generateId } from "@/shared/utils/utils";
 
 export let useChat = () => {
   let dispatch = useDispatch();
@@ -32,9 +33,10 @@ export let useChat = () => {
     [sessions, activeSessionId],
   );
 
+
   const createSession = (title = "New Chat") => {
     const session = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       title,
       createdAt: new Date().toISOString(),
       messages: [],

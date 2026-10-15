@@ -1,7 +1,6 @@
 import "dotenv/config";
 import type { AppEnv } from "../types/env.js";
 
-
 function required(name: string, fallback?: string): string {
   let value = process.env[name] ?? fallback;
   if (!value) throw new Error(`missing environment variable: ${name}`);
@@ -17,10 +16,13 @@ export const env: AppEnv = {
   jwtRefreshSecret: required("JWT_REFRESH_SECRET", "dev_refresh_secret"),
   accessTokenTtl: process.env.ACCESS_TOKEN_TTL ?? "15m",
   refreshTokenTtl: process.env.REFRESH_TOKEN_TTL ?? "7d",
-  refreshCookieName : process.env.REFRESH_COOKIE_NAME ?? "refreshToken",
-  mistralapikey : required("MISTRAL_API_KEY"),
-  tvlyApiKey : required("TVLY_API_KEY"),
-  langsmithapikey:required("LANGSMITH_API_KEY"),
+  refreshCookieName: process.env.REFRESH_COOKIE_NAME ?? "refreshToken",
+  mistralapikey: required("MISTRAL_API_KEY"),
+  tvlyApiKey: required("TVLY_API_KEY"),
+  langsmithapikey: required("LANGSMITH_API_KEY"),
+  cookieSecure: process.env.COOKIE_SECURE
+    ? process.env.COOKIE_SECURE === "true"
+    : process.env.NODE_ENV === "production",
 };
 
 export const isProduction = env.nodeEnv === "production";
